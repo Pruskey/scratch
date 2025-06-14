@@ -1,5 +1,6 @@
 body {
   background: linear-gradient(22deg, #8c03fc 0%, #38a773 100%);
+  color: rgb(255, 255, 255);
   font-family: Arial, sans-serif;
   padding: 400px;
   text-align: center;
@@ -12,7 +13,7 @@ form input {
 }
 
 form button{
-  border-radius: 100px 10px 100px 0px;
+  border-radius: 10px 100px 10px 0px;
 } 
 
 button {
@@ -33,6 +34,7 @@ ul {
   border-style:outset;
   border-color: #38a773;
   padding: 5px;
-  background-color: white;
+  background-color: rgb(255, 255, 255);
+  color: black;
   list-style-type:none;
 }
