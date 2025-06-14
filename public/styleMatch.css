@@ -26,3 +26,17 @@ button:hover {
   background-color: #38a773;
 }
 
+defense button {
+  transition-duration: 0.4s;
+  color: black;
+  background-color: white;
+  padding: 8px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+defense button:hover {
+  transition-duration: 0.4s;
+  background-color: #38a773;
+}

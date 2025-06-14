@@ -5,29 +5,42 @@ const sqlite3 = require('sqlite3').verbose()
 const app = express()
 const port = 8080
 
-// Set correct paths
+// paths
 const viewsPath = path.join(__dirname, '..', 'views')
 const publicPath = path.join(__dirname, '..', 'public')
 const dbPath = path.join(__dirname, '..', 'database', 'database.db')
 
-// Middleware
+// middleware
 app.use(express.static(publicPath))
 app.use(express.urlencoded({ extended: true }))
+app.use(express.json()) // Needed for AJAX POST requests
 
-// SQLite database connection
+// database
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) return console.error(err.message)
   console.log('Connected to the SQLite database.')
 })
 
-// Create table if it doesn't exist
+// tables
 db.run(`CREATE TABLE IF NOT EXISTS teams (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
   number INTEGER NOT NULL
 )`)
 
-// Routes
+db.run(`CREATE TABLE IF NOT EXISTS matches (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  team_id INTEGER NOT NULL,
+  match_number INTEGER NOT NULL,
+  coralA INTEGER DEFAULT 0,
+  algaeA INTEGER DEFAULT 0,
+  coralT INTEGER DEFAULT 0,
+  algaeT INTEGER DEFAULT 0,
+  defense INTEGER DEFAULT 0,
+  FOREIGN KEY(team_id) REFERENCES teams(id)
+)`)
+
+// routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(viewsPath, 'homepage.html'))
 })
@@ -63,7 +76,96 @@ app.post('/add-team', (req, res) => {
       console.error("Insert error:", err.message)
       return res.status(500).send("Failed to insert team")
     }
-    res.redirect('/')
+    res.redirect('/index')
+  })
+})
+
+// matches
+app.get('/team/:id', (req, res) => {
+  const teamId = req.params.id
+  db.get('SELECT * FROM teams WHERE id = ?', [teamId], (err, team) => {
+    if (err || !team) return res.status(404).send("Team not found")
+
+    db.all('SELECT * FROM matches WHERE team_id = ?', [teamId], (err, matches) => {
+      if (err) return res.status(500).send("Error retrieving matches")
+
+      let html = `<h1>${team.name} (Team #${team.number})</h1>
+        <h2>Matches</h2><ul>`
+      matches.forEach(match => {
+        html += `<li>Match #${match.match_number} 
+          <button onclick="location.href='/match/${match.id}'">Scout</button></li>`
+      })
+      html += `</ul>
+        <form method="POST" action="/create-match">
+          <input type="hidden" name="team_id" value="${teamId}">
+          <input type="number" name="match_number" placeholder="Match #" required>
+          <button type="submit">Create Match</button>
+        </form>
+        <br><a href="/next">Back</a>`
+
+      res.send(html)
+    })
+  })
+})
+
+app.post('/create-match', (req, res) => {
+  const teamId = req.body.team_id
+  const matchNumber = parseInt(req.body.match_number)
+
+  db.run('INSERT INTO matches (team_id, match_number) VALUES (?, ?)', [teamId, matchNumber], function (err) {
+    if (err) return res.status(500).send("Error creating match")
+    res.redirect(`/match/${this.lastID}`)
+  })
+})
+
+app.get('/match/:id', (req, res) => {
+  const matchId = req.params.id
+  db.get('SELECT * FROM matches WHERE id = ?', [matchId], (err, match) => {
+    if (err || !match) return res.status(404).send("Match not found")
+    res.send(`
+      <!DOCTYPE html>
+      <html><head><title>Loading</title></head><body>
+        <script>
+          sessionStorage.setItem('currentMatch', '${JSON.stringify(match)}');
+          window.location.href = '/match-page';
+        </script>
+      </body></html>
+    `)
+  })
+})
+
+app.get('/match-page', (req, res) => {
+  res.sendFile(path.join(viewsPath, 'match.html'))
+})
+
+app.post('/update-match', (req, res) => {
+  const { id, action } = req.body
+  const [field, operation] = action.split('_')
+  const modifier = operation === 'inc' ? '+ 1' : '- 1'
+
+  const query = `UPDATE matches SET ${field} = ${field} ${modifier} WHERE id = ?`
+  db.run(query, [id], function (err) {
+    if (err) return res.status(500).send("Failed to update match")
+    res.redirect(`/match/${id}`)
+  })
+})
+
+app.post('/update-match-ajax', (req, res) => {
+  const { id, field, delta } = req.body
+  const allowedFields = ['coralA', 'algaeA', 'coralT', 'algaeT', 'defense']
+
+  if (!allowedFields.includes(field) || typeof delta !== 'number') {
+    return res.status(400).json({ error: 'Invalid input' })
+  }
+
+  const query = `UPDATE matches SET ${field} = ${field} + ? WHERE id = ?`
+  db.run(query, [delta, id], function (err) {
+    if (err) return res.status(500).json({ error: 'Update failed' })
+
+    db.get(`SELECT ${field} FROM matches WHERE id = ?`, [id], (err, row) => {
+      if (err) return res.status(500).json({ error: 'Fetch failed' })
+      res.json({ [field]: row[field] })
+    })
   })
 })
 

@@ -3,11 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <title>Scouting</title>
-  <link rel="stylesheet" href="/styleTeams.css">
+  <link rel="stylesheet" href="/styleScout.css">
 </head>
 <body>
   <h1>Select Team</h1>
-  <p>Testing</p>
+  <ul id="teamList"></ul>
+
   <button onclick="window.location.href='/index'">Return</button>
+
+  <script>
+    fetch('/teams')
+      .then(res => res.json())
+      .then(data => {
+        const list = document.getElementById('teamList')
+        data.forEach(team => {
+          const li = document.createElement('li')
+          li.innerHTML = `${team.name} (Team #${team.number}) 
+            <button onclick="window.location.href='/team/${team.id}'">Scout</button>`
+          list.appendChild(li)
+        })
+      })
+  </script>
 </body>
 </html>

@@ -1,0 +1,49 @@
+<!-- views/match.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Match Scouting</title>
+  <link rel="stylesheet" href="/styleMatch.css">
+</head>
+<body>
+  <div class="container">
+    <h1 id="matchHeader"></h1>
+
+    <div class="field">
+      <label>Coral (Auto): <span id="coralA"></span></label>
+      <button onclick="updateStat('coralA', 1)">+1</button>
+      <button onclick="updateStat('coralA', -1)">-1</button>
+    </div>
+
+    <div class="field">
+      <label>Algae (Auto): <span id="algaeA"></span></label>
+      <button onclick="updateStat('algaeA', 1)">+1</button>
+      <button onclick="updateStat('algaeA', -1)">-1</button>
+    </div>
+
+    <div class="field">
+      <label>Coral (TeleOp): <span id="coralT"></span></label>
+      <button onclick="updateStat('coralT', 1)">+1</button>
+      <button onclick="updateStat('coralT', -1)">-1</button>
+    </div>
+
+    <div class="field">
+      <label>Algae (TeleOp): <span id="algaeT"></span></label>
+      <button onclick="updateStat('algaeT', 1)">+1</button>
+      <button onclick="updateStat('algaeT', -1)">-1</button>
+    </div>
+    <defense>
+    <div class="field">
+      <label>Defense: <span id="defense"></span></label>
+      <button onclick="updateStat('defense', 1)">+1</button>
+      <button onclick="updateStat('defense', -1)">-1</button>
+    </div>
+    </defense>
+
+    <br><a id="backLink" href="#">Back to Matches</a>
+  </div>
+
+  <script src="/match.js"></script>
+</body>
+</html>
