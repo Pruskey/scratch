@@ -17,6 +17,7 @@ form button{
 } 
 
 button {
+  transition-duration: 0.4s;
   color: black;
   background-color: white;
   padding: 10px 15px;
@@ -26,10 +27,12 @@ button {
 }
 
 form button:hover, button:hover {
+  transition-duration: 0.4s;
   background-color: #38a773;
 }
 
 ul {
+  transition-duration: 0.4s;
   border-radius: 20px;
   border-style:outset;
   border-color: #38a773;

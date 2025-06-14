@@ -1,0 +1,22 @@
+body {
+  background: linear-gradient(22deg, #8c03fc 0%, #38a773 100%);
+  color: rgb(255, 255, 255);
+  font-family: Arial, sans-serif;
+  padding: 400px;
+  text-align: center;
+}
+
+button {
+  transition-duration: 0.4s;
+  color: black;
+  background-color: white;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+    transition-duration: 0.4s;
+    background-color:#38a773;
+}

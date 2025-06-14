@@ -9,6 +9,7 @@ body {
 }
 
 .button {
+    transition-duration: 0.4s;
     font-size: 25px;
     border-radius: 200px;
     border-width: 10px;
@@ -18,5 +19,6 @@ body {
     align-items: center;
 }
 .button:hover {
-    background-color:#8c03fc;
+    transition-duration: 0.4s;
+    background-color:#38a773;
 }
