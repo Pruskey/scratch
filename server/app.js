@@ -29,15 +29,15 @@ db.run(`CREATE TABLE IF NOT EXISTS teams (
 
 // Routes
 app.get('/', (req, res) => {
-  res.sendFile(path.join(viewsPath, 'index.html'))
+  res.sendFile(path.join(viewsPath, 'homepage.html'))
 })
 
 app.get('/next', (req, res) => {
   res.sendFile(path.join(viewsPath, 'next.html'))
 })
 
-app.get('/home', (req, res) => {
-  res.sendFile(path.join(viewsPath, 'homepage.html'))
+app.get('/index', (req, res) => {
+  res.sendFile(path.join(viewsPath, 'index.html'))
 })
 
 app.get('/teams', (req, res) => {
