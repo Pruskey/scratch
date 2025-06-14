@@ -1,0 +1,22 @@
+body {
+    background: linear-gradient(22deg, #8c03fc 0%, #38a773 100%);
+    font-family: Arial, sans-serif;
+    font-style: italic;
+    font-size: 40px;
+    color: white;
+    padding: 400px;
+    text-align: center;
+}
+
+.button {
+    font-size: 25px;
+    border-radius: 200px;
+    border-width: 10px;
+    padding: 15px;
+    border-style:solid;
+    background-color: #ffffff; /* Green */
+    align-items: center;
+}
+.button:hover {
+    background-color:#8c03fc;
+}
