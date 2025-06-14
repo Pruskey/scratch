@@ -11,7 +11,11 @@ form input {
   font-size: 16px;
 }
 
-form button, button {
+form button{
+  border-radius: 100px 10px 100px 0px;
+} 
+
+button {
   color: black;
   background-color: white;
   padding: 10px 15px;
