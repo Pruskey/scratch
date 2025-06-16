@@ -1,4 +1,3 @@
-<!-- views/match.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,12 +32,18 @@
       <button onclick="updateStat('algaeT', 1)">+1</button>
       <button onclick="updateStat('algaeT', -1)">-1</button>
     </div>
+    
+    <br></br>
+
     <defense>
     <div class="field">
       <label>Defense: <span id="defense"></span></label>
-      <button onclick="updateStat('defense', 1)">+1</button>
-      <button onclick="updateStat('defense', -1)">-1</button>
+      <label class="switch">
+        <input type="checkbox" id="myToggle">
+        <span class="slider"></span>
+      </label>
     </div>
+    
     </defense>
 
     <br><a id="backLink" href="#">Back to Matches</a>

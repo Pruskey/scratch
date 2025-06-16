@@ -36,7 +36,7 @@ db.run(`CREATE TABLE IF NOT EXISTS matches (
   algaeA INTEGER DEFAULT 0,
   coralT INTEGER DEFAULT 0,
   algaeT INTEGER DEFAULT 0,
-  defense INTEGER DEFAULT 0,
+  defense BOOLEAN DEFAULT FALSE,
   FOREIGN KEY(team_id) REFERENCES teams(id)
 )`)
 
@@ -154,19 +154,35 @@ app.post('/update-match-ajax', (req, res) => {
   const { id, field, delta } = req.body
   const allowedFields = ['coralA', 'algaeA', 'coralT', 'algaeT', 'defense']
 
-  if (!allowedFields.includes(field) || typeof delta !== 'number') {
+  if (!allowedFields.includes(field)) {
     return res.status(400).json({ error: 'Invalid input' })
   }
 
-  const query = `UPDATE matches SET ${field} = ${field} + ? WHERE id = ?`
-  db.run(query, [delta, id], function (err) {
-    if (err) return res.status(500).json({ error: 'Update failed' })
-
-    db.get(`SELECT ${field} FROM matches WHERE id = ?`, [id], (err, row) => {
-      if (err) return res.status(500).json({ error: 'Fetch failed' })
-      res.json({ [field]: row[field] })
+  if (field === 'defense') {
+    //botao desgraçado
+    const toggleQuery = `UPDATE matches SET defense = NOT defense WHERE id = ?`
+    db.run(toggleQuery, [id], function (err) {
+      if (err) return res.status(500).json({ error: 'Toggle failed' })
+      db.get(`SELECT defense FROM matches WHERE id = ?`, [id], (err, row) => {
+        if (err) return res.status(500).json({ error: 'Fetch failed' })
+        res.json({ defense: !!row.defense })
+      })
     })
-  })
+  } else {
+    if (typeof delta !== 'number') {
+      return res.status(400).json({ error: 'Invalid delta for numeric field' })
+    }
+
+    const query = `UPDATE matches SET ${field} = ${field} + ? WHERE id = ?`
+    db.run(query, [delta, id], function (err) {
+      if (err) return res.status(500).json({ error: 'Update failed' })
+
+      db.get(`SELECT ${field} FROM matches WHERE id = ?`, [id], (err, row) => {
+        if (err) return res.status(500).json({ error: 'Fetch failed' })
+        res.json({ [field]: row[field] })
+      })
+    })
+  }
 })
 
 app.listen(port, () => {
