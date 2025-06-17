@@ -13,7 +13,7 @@ const dbPath = path.join(__dirname, '..', 'database', 'database.db')
 // middleware
 app.use(express.static(publicPath))
 app.use(express.urlencoded({ extended: true }))
-app.use(express.json()) // Needed for AJAX POST requests
+app.use(express.json())
 
 // database
 const db = new sqlite3.Database(dbPath, (err) => {
@@ -89,7 +89,37 @@ app.get('/team/:id', (req, res) => {
     db.all('SELECT * FROM matches WHERE team_id = ?', [teamId], (err, matches) => {
       if (err) return res.status(500).send("Error retrieving matches")
 
-      let html = `<h1>${team.name} (Team #${team.number})</h1>
+      let html = `
+      <style>
+      body {
+  text-align: center;
+  color: rgb(255, 255, 255);
+  font-family: Arial, sans-serif;
+  background: linear-gradient(22deg, #8c03fc 0%, #38a773 100%);
+  padding: 400px;
+  list-style-type:none;
+}
+
+h1 {
+  text-align: center;
+}
+
+button {
+  transition-duration: 0.4s;
+  color: black;
+  background-color: white;
+  padding: 8px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  transition-duration: 0.4s;
+  background-color: #38a773;
+}
+      </style>
+      <h1>${team.name} (Team #${team.number})</h1>
         <h2>Matches</h2><ul>`
       matches.forEach(match => {
         html += `<li>Match #${match.match_number} 
